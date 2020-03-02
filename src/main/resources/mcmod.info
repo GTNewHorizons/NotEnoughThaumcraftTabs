@@ -1,0 +1,17 @@
+[
+{
+  "modid": "bt",
+  "name": "NotEnoughThaumcraftTabs",
+  "description": "Adds buttons to Thaumonomicon to switch between Thaumcraft tabs.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["fewizz"],
+  "credits": "Azanor for creating Thaumcraft",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
+
