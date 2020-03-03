@@ -101,16 +101,14 @@ public class GuiResearchBrowser extends GuiScreen {
         this.research.clear();
         this.hasScribestuff = false;
         if (selectedCategory == null) {
-            Set<String> col = ResearchCategories.researchCategories.keySet();
-            selectedCategory = col.iterator().next();
+            Set<String> cat = ResearchCategories.researchCategories.keySet();
+            selectedCategory = cat.iterator().next();
         }
 
-        Collection<ResearchItem> col1 = ResearchCategories.getResearchList(selectedCategory).research.values();
-        Iterator<ResearchItem> i$ = col1.iterator();
-
-        while (i$.hasNext()) {
-            Object res = i$.next();
-            this.research.add((ResearchItem) res);
+        Collection<ResearchItem> res = ResearchCategories.getResearchList(selectedCategory).research.values();
+        Iterator<ResearchItem> iter = res.iterator();
+        while (iter.hasNext()) {
+            this.research.add(iter.next());
         }
 
         if (ResearchManager.consumeInkFromPlayer(this.mc.thePlayer, false)
@@ -159,7 +157,7 @@ public class GuiResearchBrowser extends GuiScreen {
         super.keyTyped(par1, key);
         if (key == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
             highlightedItem.clear();
-            this.mc.displayGuiScreen((GuiScreen) null);
+            this.mc.displayGuiScreen(null);
             this.mc.setIngameFocus();
         } else if (key == 1) {
             highlightedItem.clear();
@@ -233,13 +231,13 @@ public class GuiResearchBrowser extends GuiScreen {
             this.fontRendererObj.drawSplitString(this.popupmessage, cats - 75, count - swop, 150, -7302913);
         }
 
-        Set<String> var14 = ResearchCategories.researchCategories.keySet();
+        Set<String> categories = ResearchCategories.researchCategories.keySet();
         count = 0;
         int oldCount = 0;
         boolean var15 = false;
 
-        for (Iterator<String> i$ = var14.iterator(); i$.hasNext(); count = oldCount) {
-            Object obj = i$.next();
+        for (Iterator<String> iter = categories.iterator(); iter.hasNext(); count = oldCount) {
+            String category = iter.next();
             if (count - count / 18 * 18 >= 9) {
                 oldCount = count;
                 count -= 9;
@@ -251,13 +249,13 @@ public class GuiResearchBrowser extends GuiScreen {
                 var15 = false;
             }
 
-            ResearchCategoryList rcl = ResearchCategories.getResearchList((String) obj);
-            if (!((String) obj).equals("ELDRITCH")
+            ResearchCategoryList rcl = ResearchCategories.getResearchList(category);
+            if (!category.equals("ELDRITCH")
                     || ResearchManager.isResearchComplete(this.player, "ELDRITCHMINOR")) {
                 int mposx = mx - (var4 - 24 + (var15 ? 280 : 0));
                 int mposy = my - (var5 + count * 24);
                 if (mposx >= 0 && mposx < 24 && mposy >= 0 && mposy < 24) {
-                    this.fontRendererObj.drawStringWithShadow(ResearchCategories.getCategoryName((String) obj), mx,
+                    this.fontRendererObj.drawStringWithShadow(ResearchCategories.getCategoryName(category), mx,
                             my - 8, 16777215);
                 }
 
@@ -800,23 +798,21 @@ public class GuiResearchBrowser extends GuiScreen {
 
     protected void mouseClicked(int par1, int par2, int par3) {
         this.popuptime = System.currentTimeMillis() - 1L;
-        int count;
         if (this.currentHighlight != null
                 && !completedResearch.get(this.player).contains(this.currentHighlight.key)
                 && this.canUnlockResearch(this.currentHighlight)) {
             this.updateResearch();
-            boolean var14 = this.currentHighlight.tags != null && this.currentHighlight.tags.size() > 0
-                    && (Config.researchDifficulty == -1
-                            || Config.researchDifficulty == 0 && this.currentHighlight.isSecondary());
-            if (var14) {
-                boolean var15 = true;
-                Aspect[] var16 = this.currentHighlight.tags.getAspects();
-                count = var16.length;
 
-                for (int var18 = 0; var18 < count; ++var18) {
-                    Aspect var17 = var16[var18];
+            if (this.currentHighlight.tags != null && this.currentHighlight.tags.size() > 0
+                    && (Config.researchDifficulty == -1
+                            || Config.researchDifficulty == 0 && this.currentHighlight.isSecondary())) {
+                boolean var15 = true;
+                Aspect[] aspects = this.currentHighlight.tags.getAspects();
+
+                for (int i = 0; i < aspects.length; ++i) {
+                    Aspect aspect = aspects[i];
                     if (Thaumcraft.proxy.playerKnowledge.getAspectPoolFor(this.player,
-                            var17) < this.currentHighlight.tags.getAmount(var17)) {
+                            aspect) < this.currentHighlight.tags.getAmount(aspect)) {
                         var15 = false;
                         break;
                     }
@@ -842,22 +838,22 @@ public class GuiResearchBrowser extends GuiScreen {
         } else {
             int var4 = (this.width - this.paneWidth) / 2;
             int var5 = (this.height - this.paneHeight) / 2;
-            Set<String> cats = ResearchCategories.researchCategories.keySet();
-            count = 0;
-            boolean swop = false;
-            Iterator<String> i$ = cats.iterator();
-            boolean var10 = false;
 
+            Set<String> cats = ResearchCategories.researchCategories.keySet();
+            int count = 0;
+            boolean swop = false;
+            Iterator<String> iter = cats.iterator();
+            boolean var10 = false;
             label89: while (true) {
-                String obj;
+                String category;
                 do {
-                    if (!i$.hasNext()) {
+                    if (!iter.hasNext()) {
                         break label89;
                     }
+                    category = iter.next();
 
-                    obj = i$.next();
-                    ResearchCategoryList rcl = ResearchCategories.getResearchList(obj);
-                } while (obj.equals("ELDRITCH")
+                    ResearchCategoryList rcl = ResearchCategories.getResearchList(category);
+                } while (category.equals("ELDRITCH")
                         && !ResearchManager.isResearchComplete(this.player, "ELDRITCHMINOR"));
 
                 int oldCount;
@@ -875,7 +871,7 @@ public class GuiResearchBrowser extends GuiScreen {
                 int mposx = par1 - (var4 - 24 + (swop ? 280 : 0));
                 int mposy = par2 - (var5 + count * 24);
                 if (mposx >= 0 && mposx < 24 && mposy >= 0 && mposy < 24) {
-                    selectedCategory = obj;
+                    selectedCategory = category;
                     this.updateResearch();
                     this.playButtonClick();
                     break;
@@ -910,18 +906,13 @@ public class GuiResearchBrowser extends GuiScreen {
     }
 
     private boolean canUnlockResearch(ResearchItem res) {
-        String[] arr$;
-        int len$;
-        int i$;
-        String pt;
-        ResearchItem parent;
-        if (res.parents != null && res.parents.length > 0) {
-            arr$ = res.parents;
-            len$ = arr$.length;
+        String[] parents;
 
-            for (i$ = 0; i$ < len$; ++i$) {
-                pt = arr$[i$];
-                parent = ResearchCategories.getResearch(pt);
+        if (res.parents != null && res.parents.length > 0) {
+            parents = res.parents;
+
+            for (int i = 0; i < parents.length; ++i) {
+                ResearchItem parent = ResearchCategories.getResearch(parents[i]);
                 if (parent != null && !completedResearch.get(this.player).contains(parent.key)) {
                     return false;
                 }
@@ -929,12 +920,10 @@ public class GuiResearchBrowser extends GuiScreen {
         }
 
         if (res.parentsHidden != null && res.parentsHidden.length > 0) {
-            arr$ = res.parentsHidden;
-            len$ = arr$.length;
+            parents = res.parentsHidden;
 
-            for (i$ = 0; i$ < len$; ++i$) {
-                pt = arr$[i$];
-                parent = ResearchCategories.getResearch(pt);
+            for (int i = 0; i < parents.length; ++i) {
+                ResearchItem parent = ResearchCategories.getResearch(parents[i]);
                 if (parent != null && !completedResearch.get(this.player).contains(parent.key)) {
                     return false;
                 }
