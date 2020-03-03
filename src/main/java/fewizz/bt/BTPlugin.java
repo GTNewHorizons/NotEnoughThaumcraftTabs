@@ -21,7 +21,7 @@ public class BTPlugin implements IFMLLoadingPlugin {
         return null;
     }
 
-    public void injectData(Map data) {
+    public void injectData(Map<String, Object> data) {
         coreFile = (File) data.get("coremodLocation");
     }
 
