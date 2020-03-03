@@ -551,7 +551,6 @@ public class GuiResearchBrowser extends GuiScreen {
         Iterator var34 = researchCategories.iterator();
         max = (ResearchManager.isResearchComplete(this.player, "ELDRITCHMINOR") ? researchCategories.size() - 1
                 : researchCategories.size() - 2) / 18;
-        System.out.println(researchCategories.size() + " " + max);
         var30 = false;
 
         while (true) {
