@@ -28,3 +28,4 @@ eclipse/
 *.iml
 .idea
 /bin/
+*.bat
